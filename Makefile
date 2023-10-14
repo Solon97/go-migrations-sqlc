@@ -1,3 +1,4 @@
+include .env
 ID_USER := $(shell id -u)
 ID_GROUP := $(shell id -g)
 
@@ -14,11 +15,18 @@ db.up:
 	postgres:latest
 
 MIGRATION_PATH := sql/migrations
-MIGRATE := podman run -v ./$(MIGRATION_PATH):/migrations migrate/migrate
+MIGRATE := docker run --rm -v ./$(MIGRATION_PATH):/migrations -u $(ID_USER):$(ID_GROUP) --network go-sqlc_default migrate/migrate 
 
+# Migrations
 migration.create: 
 	$(MIGRATE) create -ext sql -dir migrations $(NAME)
 migration.up:
-	$(MIGRATE) -path=migrations -database $(DATABASE) -verbose up
+	$(MIGRATE) -path=migrations -database $(DATABASE_URL) -verbose up
 migration.down:
-	$(MIGRATE) -path=migrations -database $(DATABASE) -verbose down -all
+	$(MIGRATE) -path=migrations -database $(DATABASE_URL) -verbose down -all
+
+# SQLC
+SQLC := docker run --rm -u $(ID_USER):$(ID_GROUP) -v .:/src -w /src sqlc/sqlc
+
+gen.sqlc:
+	$(SQLC) generate
