@@ -21,9 +21,9 @@ MIGRATE := docker run --rm -v ./$(MIGRATION_PATH):/migrations -u $(ID_USER):$(ID
 migration.create: 
 	$(MIGRATE) create -ext sql -dir migrations $(NAME)
 migration.up:
-	$(MIGRATE) -path=migrations -database $(DATABASE_URL) -verbose up
+	$(MIGRATE) -path=migrations -database $(DB_URL) -verbose up
 migration.down:
-	$(MIGRATE) -path=migrations -database $(DATABASE_URL) -verbose down -all
+	$(MIGRATE) -path=migrations -database $(DB_URL) -verbose down -all
 
 # SQLC
 SQLC := docker run --rm -u $(ID_USER):$(ID_GROUP) -v .:/src -w /src sqlc/sqlc
