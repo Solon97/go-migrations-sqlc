@@ -9,6 +9,7 @@ var cfg *config
 type config struct {
 	DBDriver string `mapstructure:"DB_DRIVER"`
 	DBUrl    string `mapstructure:"DB_URL"`
+	DBName   string `mapstructure:"DB_NAME"`
 }
 
 func LoadConfig(path string) (*config, error) {

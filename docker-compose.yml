@@ -1,0 +1,42 @@
+version: '3'
+services:
+  database:
+    container_name: sqlc-postgres
+    image: postgres:latest
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: courses
+    volumes:
+      - ./db/pg_data:/var/lib/postgresql/data
+    user: 1000:1000
+    ports:
+      - "5432:5432"
+    networks:
+      - go-sqlc_default
+
+  go-runner:
+    container_name: sqlc-go
+    build:
+      context: .
+      dockerfile: Dockerfile.app
+    depends_on:
+      - database
+    networks:
+      - go-sqlc_default
+    command: go run cmd/runSQLC/main.go
+  
+  # migrate:
+  #   container_name: sqlc-migrate
+  #   image: migrate/migrate
+  #   depends_on:
+  #     - database
+  #   volumes:
+  #     - ./sql/migrations:/migrations
+  #   user: 1000:1000
+  #   networks:
+  #     - go-sqlc_default
+  #   command: -path=/migrations -database $(DB_URL) -verbose up
+
+networks:
+  go-sqlc_default:

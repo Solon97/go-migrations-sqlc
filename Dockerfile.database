@@ -1,0 +1,4 @@
+FROM postgres:latest
+RUN chown postgres:postgres /var/lib/postgresql/data
+VOLUME /var/lib/postgresql/data
+USER postgres

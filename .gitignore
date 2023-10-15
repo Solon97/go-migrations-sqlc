@@ -1,3 +1,4 @@
 db/pg_data/**
 !db/pg_data/**/.gitkeep
 .env
+vendor
